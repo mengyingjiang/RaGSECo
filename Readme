@@ -1,0 +1,18 @@
+This code is provided for paper "Relation-aware subgraph embedding with co-contrastive learning for drug-drug interaction predictio"
+
+Dataset 1
+
+--dataset dataset1 --task task1 --epo_num 120 --learn_rating 0.00002 --drop_out_rating 0.3 --graph_dim 500 --batch_size 512  --n_hop 0 --dim_EN 1000
+
+--dataset dataset1 --task task2 --epo_num 120 --learn_rating 0.000005 --drop_out_rating 0.2 --graph_dim 500 --batch_size 512  --n_hop 3 --dim_EN 1500
+
+--dataset dataset1 --task task3 --epo_num 120 --learn_rating 0.000005 --drop_out_rating 0.2 --graph_dim 500 --batch_size 512  --n_hop 3 --dim_EN 1500
+
+
+Dataset 2
+
+--dataset dataset2 --task task1 --epo_num 120 --learn_rating 0.00002 --drop_out_rating 0.5 --graph_dim 500 --batch_size 1024  --n_hop 0 --dim_EN 1500
+
+--dataset dataset2 --task task2 --epo_num 120 --learn_rating 0.000005 --drop_out_rating 0.5 --graph_dim 500 --batch_size 1024  --n_hop 3 --dim_EN 1500
+
+--dataset dataset2 --task task3 --epo_num 120 --learn_rating 0.000005 --drop_out_rating 0.5 --graph_dim 500 --batch_size 1024  --n_hop 3 --dim_EN 1500
