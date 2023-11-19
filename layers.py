@@ -112,13 +112,12 @@ class FNN(torch.nn.Module):  # Joining together
         self.ac = gelu
 
     def forward(self, X):
-        X = self.dr(self.bn1(self.ac(self.l1(X))))
+        X = self.dr(F.relu(self.l1(X)))
 
         for att2 in self.att2s:
             X = att2(X)
 
-        X =  self.dr(self.bn2(self.ac(self.l2(X))))
-
+        X = self.dr(F.relu(self.l2(X)))
         return X
 
 class EncoderLayer(torch.nn.Module):
