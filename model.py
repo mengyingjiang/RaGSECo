@@ -60,7 +60,7 @@ class RaSECo(torch.nn.Module):
         ss  = self.disc(x_initial, x_embed_all, row, clomn, row_neg, clomn_neg, n_posi, n_neg)
 
         X = torch.cat((x_initial, x_embed_all, X_smile, x_initial+x_embed_all+X_smile), 1)
-        X = self.dr(self.bn1(self.ac(self.l1(X))))
+        X = self.dr(F.relu(self.l1(X)))
         X = self.l2(X)
 
         return X,  ss, n_posi, n_neg
