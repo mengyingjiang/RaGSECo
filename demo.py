@@ -1,4 +1,4 @@
-import sqlite3  # 用于打开数据库
+import sqlite3 
 import time
 from sklearn.model_selection import StratifiedKFold
 from RaGSECo import *
@@ -34,8 +34,8 @@ args = parser.parse_args()
 def main():
     if args.dataset=='dataset1':
         conn = sqlite3.connect("dataset1/event.db")
-        df_drug = pd.read_sql('select * from drug;',conn)  # [572,7] 572个drug的信息：id index smile pathway target enzyme name #
-        extraction = pd.read_sql('select * from extraction;', conn)  # [37264,5] 37264条交互边的信息： index mechanism  action drugA drug B #
+        df_drug = pd.read_sql('select * from drug;',conn)
+        extraction = pd.read_sql('select * from extraction;', conn) 
         drug_smiles = pd.read_csv("dataset1/data.csv")
         mechanism = extraction['mechanism']  # 37264 所有交互边的 mechanism #
         action = extraction['action']
@@ -76,13 +76,13 @@ def cross_val(label, drugA, drugB, event_num, X_vector, DDI_edge, multi_graph, d
         temp_drug1 = [[] for i in range(event_num)]
         temp_drug2 = [[] for i in range(event_num)]
         for i in range(len(label)):
-            temp_drug1[label[i]].append(drugA[i])  # list，有65行，每一行表示 交互类型为i的一半drug
-            temp_drug2[label[i]].append(drugB[i])  # list，有65行，每一行表示 交互类型为i的另一半drug
+            temp_drug1[label[i]].append(drugA[i])  
+            temp_drug2[label[i]].append(drugB[i]) 
         drug_cro_dict = {}
         for i in range(event_num):
-            for j in range(len(temp_drug1[i])):  # 遍历temp_drug中的每一行和每行的药物
+            for j in range(len(temp_drug1[i])):
                 drug_cro_dict[temp_drug1[i][
-                    j]] = j % args.cross_ver_tim  # 计算将该药物参与的交互类型与5的余数，从而得到一个dict，key为的药物，value为这些药物参与的交互类型与5的余数（0,1,2,3,4）
+                    j]] = j % args.cross_ver_tim
                 drug_cro_dict[temp_drug2[i][j]] = j % args.cross_ver_tim
         train_drug = [[] for i in range(args.cross_ver_tim)]
         test_drug = [[] for i in range(args.cross_ver_tim)]
@@ -96,7 +96,7 @@ def cross_val(label, drugA, drugB, event_num, X_vector, DDI_edge, multi_graph, d
     cross_ver = 0
     for train_index, test_index in skf.split(DDI_edge, label):
         if args.task == "task1":
-            y_train, y_test = label[train_index], label[test_index]  # 标签 [29811],[7453]
+            y_train, y_test = label[train_index], label[test_index] 
             ddi_edge_train, ddi_edge_test = DDI_edge[train_index], DDI_edge[test_index]
 
         if args.task == "task2":
@@ -104,18 +104,18 @@ def cross_val(label, drugA, drugB, event_num, X_vector, DDI_edge, multi_graph, d
             ddi_edge_train = [];ddi_edge_test = []
             for i in range(len(drugA)):
                 if (drugA[i] in np.array(train_drug[cross_ver])) and (
-                        drugB[i] in np.array(train_drug[cross_ver])):  # 第i个ddi的两个drug都在训练集中，就将该ddi添加进训练集
+                        drugB[i] in np.array(train_drug[cross_ver])):  
                     y_train.append(label[i])
                     ddi_edge_train.append(DDI_edge[i])
 
                 if (drugA[i] not in np.array(train_drug[cross_ver])) and (
-                        drugB[i] in np.array(train_drug[cross_ver])):  # 第i个ddi的第一个drug不在训练集中，另一个在训练集中，就将其添加进测试集
+                        drugB[i] in np.array(train_drug[cross_ver])): 
                     y_test.append(label[i])
                     ddi_edge_test.append(DDI_edge[i])
 
                 if (drugA[i] in np.array(train_drug[cross_ver])) and (
-                        drugB[i] not in np.array(train_drug[cross_ver])):  # 第i个ddi的第一个drug不在训练集中，另一个在训练集中，就将其添加进测试集
-                    y_test.append(label[i])  # 将第i个ddi的feature和label添加进测试集
+                        drugB[i] not in np.array(train_drug[cross_ver])):  
+                    y_test.append(label[i])
                     ddi_edge_test.append(DDI_edge[i])
 
         if args.task == "task3":
@@ -145,7 +145,7 @@ def cross_val(label, drugA, drugB, event_num, X_vector, DDI_edge, multi_graph, d
         print("test len", len(y_test))
 
         pred_score = RaSECo_train(model, y_train, y_test, event_num,X_vector ,adj,drug_intera_fea,
-                                    ddi_edge_train,ddi_edge_test, multi_graph, drug_coding,args)  # [29811,3432],[29811],[7453,3432],[7453],65
+                                    ddi_edge_train,ddi_edge_test, multi_graph, drug_coding,args)  
         cross_ver = cross_ver + 1
         pred_type = np.argmax(pred_score, axis=1)
         y_pred = np.hstack((y_pred, pred_type))
